@@ -3,6 +3,12 @@ START:
 	; ¶ÞÒÝ¸Ø±
 	CALL	CLS
 	; ¼®·¶
+	LD	HL,PX
+	LD	A,1
+	LD	(HL),A
+	LD	HL,PY
+	LD	A,2
+	LD	(HL),A
 	LD	HL,BX
 	LD	A,10
 	LD	(HL),A
@@ -13,31 +19,36 @@ START:
 	LD	A,0
 	LD	(HL),A
 LOOP:
-	; ½Íß°½·°ÊÝÃ²
-	CALL	0BE53H
-	CP	01EH
-	JP	NZ,VIEW
-	; BULLET¦Ë®³¼Þ
-	LD	HL,BF
-	LD	A,1
-	LD	(HL),A
-VIEW:
-	; ÌßÚ²Ô°ËÞ®³¶Þ
-	LD	B,6
-	LD	D,2	; Y
-	LD	E,1	; X
-	LD	HL,PLAYER
-	CALL	0BFD0H
 	; BULLETÌ×¸Þ¶¸ÆÝ
 	LD	HL,BF
 	LD	A,(HL)
 	CP	1
-	JP	NZ,VIEWE
+	JP	Z,VIEW
+	; ½Íß°½·°ÊÝÃ²
+	CALL	0BE53H
+	CP	01EH
+	JP	NZ,VIEW
+	; BULLET¼®·¶
+	LD	HL,BF
+	LD	A,1
+	LD	(HL),A
+VIEW:
+	; BULLETÌ×¸Þ¶¸ÆÝ
+	LD	HL,BF
+	LD	A,(HL)
+	CP	0
+	JP	Z,PVIEW
 	; BULLET»ÞË®³¶¸ÆÝ
 	LD	HL,BX
 	LD	A,(HL)
 	CP	24
-	JP	Z,VIEWE
+	JP	NZ,BVIEW
+	; BULLETËË®³¼Þ
+	LD	HL,BF
+	LD	A,0
+	LD	(HL),A
+	JP	PVIEW
+BVIEW:
 	; BULLET¸Ø±
 	LD	B,4
 	LD	HL,BY
@@ -59,7 +70,15 @@ VIEW:
 	LD	E,(HL)	; X
 	LD	HL,BULLET
 	CALL	0BFD0H
-VIEWE:
+PVIEW:
+	; ÌßÚ²Ô°ËÞ®³¶Þ
+	LD	B,6
+	LD	HL,PY
+	LD	D,(HL)	; Y
+	LD	HL,PX
+	LD	E,(HL)	; X
+	LD	HL,PLAYER
+	CALL	0BFD0H
 	; WAIT
 	LD	HL,WT
 	LD	A,0
@@ -82,17 +101,21 @@ WAIT:
 	JP	NZ,LOOP
 	; RETURN
 	RET
+; Ø¿°½
 PLAYER:	DB	16,150,121,121,150,16
+PX:	DB	1
+PY:	DB	2
 BULLET:	DB	6,9,9,6
 BX:	DB	10
 BY:	DB	2
 BF:	DB	0
 CLS4:	DB	0,0,0,0
 WT:	DB	0
- ; ¶ÞÒÝ¸Ø±
+; ¶ÞÒÝ¸Ø±
 CLS:
 	XOR	A
 	LD	B,24*6
 	LD	D,0
 	LD	E,0
 	CALL	0BFEEH
+	RET

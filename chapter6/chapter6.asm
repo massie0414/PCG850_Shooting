@@ -76,8 +76,10 @@ BVIEW:
 PVIEW:
 	; ÌßÚ²Ô°ËÞ®³¶Þ
 	LD	B,6
-	LD	D,2	; Y
-	LD	E,1	; X
+	LD	HL,PY
+	LD	D,(HL)	; Y
+	LD	HL,PX
+	LD	E,(HL)	; X
 	LD	HL,PLAYER
 	CALL	0BFD0H
 	; WAIT
@@ -102,6 +104,7 @@ WAIT:
 	JP	NZ,LOOP
 	; RETURN
 	RET
+; Ø¿°½
 PLAYER:	DB	16,150,121,121,150,16
 PX:	DB	1
 PY:	DB	2
@@ -111,10 +114,11 @@ BY:	DB	2
 BF:	DB	0
 CLS4:	DB	0,0,0,0
 WT:	DB	0
- ; ¶ÞÒÝ¸Ø±
+; ¶ÞÒÝ¸Ø±
 CLS:
 	XOR	A
 	LD	B,24*6
 	LD	D,0
 	LD	E,0
 	CALL	0BFEEH
+	RET
